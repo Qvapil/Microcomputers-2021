@@ -1,0 +1,40 @@
+IN 10H
+START:	LXI B,01F4H	;Delay 500ms
+	LDA 2000H	;input
+	CPI C7H 	;compare with 199 and jump if bigger
+	JNC BLONK
+	CPI 63H	;compare with 99 and jump if bigger	
+	JNC BLINK	
+	MVI D,00H	;D holds the 10s digit, start with 0
+DEC:	CPI 0AH	;compare with 10
+	JC DONE	;if smaller then it is the last digit
+	SUI 0AH	;else subtract 10 
+	INR D		;increase 10s by one
+	JMP DEC	
+DONE:	MOV E,A	;last digit to E
+	MOV A,D	;10s digit to A
+	RRC		;rotate 4 times to put 10s digit in the 4 msb of A
+	RRC		
+	RRC
+	RRC          
+	ADD E		
+	CMA		;output lamps have negative logic so invert A
+	STA 3000H	;output
+	JMP START	
+BLINK:	MVI A,F0H	;number between 100 and 199, 4 lsb lamps blink
+	STA 3000H	;output 0000 1111 (inverse of A just set)
+	CALL DELB	;delay
+	MVI A,FFH		
+	STA 3000H	;output 0000 0000 (inverse of A just set)
+	CALL DELB	;delay
+	JMP START	
+BLONK: MVI A,0FH	;number over 199, 4 msb lamps blink
+	STA 3000H	;output 1111 0000 (inverse of A just set)
+	CALL DELB	;delay
+	MVI A,FFH		
+	STA 3000H	;output 0000 0000
+	CALL DELB	;delay
+	JMP START	
+END
+
+

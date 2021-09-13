@@ -1,0 +1,41 @@
+  IN 10H
+  MVI A,00H     ;numbers 0-255 in A
+  LXI B,0000H   ;number of binary ones in B
+  MVI D,00H     ;numbers 10H-60H in D
+  LXI H,0900H   ;addresses
+
+
+NUMBER:
+  MOV M,A       ;save number A in memory
+  MOV E,A       ;save number A in E cause we edit A in ONES loop
+
+ONES:
+  CPI 00H       ;when A is all zeros, stop checking
+  JZ CONTINUE
+  STC
+  CMC           ;set carry to 0
+  RAR           ;put each bit in carry and check
+  JNC ONES
+  INX B         ;found a one
+  JMP ONES
+
+CONTINUE:
+  MOV A,E       ;restore number in A
+  CPI 10H
+  JC NEXT       ;A<10H, check next number
+  CPI 60H
+  JC ADD        ;A<60H
+  JNZ NEXT      ;A>60H, check next number
+
+ADD:
+  INR D         ;10H<=A<=60H so increase D
+
+NEXT:
+  INR A         ;next number
+  INX H         ;next space in memory
+  CPI 00H       ;when A reaches 256 it rolls back to 00H
+  JZ FINISH
+  JMP NUMBER
+
+FINISH:
+  END

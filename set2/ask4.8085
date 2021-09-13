@@ -1,0 +1,58 @@
+START:
+	MVI D,00H	
+	LDA 2000H	
+	ANI 80H	;isolate msb to get A3
+	RRC		;shift and store in B
+	MOV B,A	
+	LDA 2000H	
+	ANI 40H	;isolate bit 01000000 to get B3
+	ANA B		;A3 AND B3
+	RRC		;shift twice for the OR with (A2 AND B2)
+	RRC
+       MOV C,A	
+	RRC		;shift again to get X3 and store in D
+	MOV D,A		
+		
+	LDA 2000H	
+	ANI 20H	;isolate bit 00100000 to get A2
+	RRC		;shift and store in B
+	MOV B,A	
+
+	LDA 2000H	
+	ANI 10H	;isolate bit 00010000 to get B2
+	ANA B		;A2 AND B2
+	ORA C	 	;(A1 AND B1) OR (A2 AND B2)
+	RRC		;shift twice to put in X2	
+	RRC		
+	ORA D		;update D
+	MOV D,A
+		
+	LDA 2000H	
+	ANI 08H	;isolate bit 00001000 to get A1
+	RRC		;shift for XOR and store in B
+	MOV B,A
+	LDA 2000H	
+	ANI 04H	;isolate bit 00000100 to get B1
+	XRA B		;A1 XOR B1
+	RRC		;shift twice for the XOR with (A0 XOR B0)	 and store in C
+	RRC			
+	MOV C,A		
+	RLC		;shift to put in X1
+	ORA D		;update D
+	MOV D,A
+			
+	LDA 2000H	
+	ANI 02H	;isolate bit 00000010 for A0
+	RRC		;shift for XOR with B0 and store in B
+	MOV B,A
+	LDA 2000H	
+	ANI 01H	;isolate bit 00000001 for B0
+	XRA B		;A0 XOR B0
+	XRA C		;(A0 XOR B0) XOR X1
+	ORA D		;update D
+	
+	CMA		
+	STA 3000H
+	JMP START
+	
+	END

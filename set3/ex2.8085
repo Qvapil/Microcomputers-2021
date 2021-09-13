@@ -1,0 +1,62 @@
+IN 10H
+MVI D,3CH    ;values for thresholds D,E
+MVI E,A1H
+
+MVI A,10H    ;digits 1-3 show nothing
+STA 0B00H    ;output at 0B00H-OB05H
+STA 0B01H
+STA 0B02H
+STA 0B03H
+
+MVI A,0DH    ;interrupt mask to allow rst 6.5
+SIM
+EI           ;enable interrupts
+
+WAIT: JMP WAIT
+
+INTR_ROUTINE:
+POP H
+CALL KIND    ;input msb at A
+STA 0B05H    ;store msb
+RLC
+RLC
+RLC
+RLC          ;move it 4 bits left
+MOV B,A
+CALL KIND    ;input lsb at A
+STA 0B04H    ;store lsb
+ADD B        ;get total number and store in B
+MOV B,A
+PUSH D       ;temporarily save D and E
+LXI D,0B00H  ;address for STDM
+CALL STDM
+CALL DCD
+POP D        ;restore D and E
+
+MOV A,B
+CMP D        ;compare with lower threshold D
+JC LOW       ;A<D
+JZ LOW       ;A=D
+CMP E        ;compare with upper threshold E
+JC MID       ;A<E
+JZ MID       ;A=E
+
+MVI A,04H    ;A>E, set 3rd lsb LED
+JMP LIGHT
+
+LOW:
+MVI A,01H    ;A<=D, set lsb LED
+JMP LIGHT
+
+MID:
+MVI A,02H    ;D<A<=E, set 2nd lsb LED
+JMP LIGHT
+
+
+LIGHT:
+CMA
+STA 3000H    ;light LED
+EI           ;wait for next interrupt
+JMP WAIT
+
+END

@@ -1,0 +1,32 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.8</VERSION>
+ <DEVICE>"ATmega16"</DEVICE>
+ <WORKING_DIR>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m16def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\Debug\ask1.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>ask1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>ask1.map</FILE>
+  <FILE>ask1.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <reset><FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</FILE><LINE>2</LINE></reset>
+  <main><FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</FILE><LINE>12</LINE></main>
+  <move_left><FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</FILE><LINE>19</LINE></move_left>
+  <move_right><FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</FILE><LINE>32</LINE></move_right>
+  <end_left><FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</FILE><LINE>30</LINE></end_left>
+  <end_right><FILE>c:\users\ivymo\Documents\Atmel Studio\7.0\ask1\ask1\main.asm</FILE><LINE>43</LINE></end_right>
+ </LABELS>
+</ASSEMBLER_INFO>

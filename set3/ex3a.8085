@@ -1,0 +1,19 @@
+SWAP nible MACRO Q      ;Q is register to swap msb,lsb
+ PUSH PSW
+
+ MOV A,Q
+ RLC
+ RLC
+ RLC
+ RLC
+ MOV Q,A
+
+ MOV A,M
+ RLC
+ RLC
+ RLC
+ RLC
+ MOV M,A
+
+ POP PSW
+ENDM

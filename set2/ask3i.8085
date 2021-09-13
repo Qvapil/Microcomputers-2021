@@ -1,0 +1,25 @@
+START:
+	LDA 2000H	
+	MOV B,A	;put input in B
+	MVI C,00H	;C is counter
+	MVI D,01H	;set D to 00000001
+LOOP1:
+	INR C		
+	MOV A,B			
+	ANI 01H       ;lsb=1?
+	JNZ LIGHT	;found rightmost 1, light LEDs	
+	MOV A,B
+	RRC		;move to check next bit
+	MOV B,A	
+	MOV A,D
+	RAL		;rotate D (D holds LED that will light)
+	MOV D,A	
+	MOV A,C
+	CPI 08H	;checked all bits, loop again
+	JNZ LOOP1
+LIGHT:
+	MOV A,D
+	CMA
+	STA 3000H
+	JMP START
+END 

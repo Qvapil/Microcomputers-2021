@@ -1,0 +1,61 @@
+LXI B,00C8H       ;delay 200ms=C8H
+
+SET:
+  MVI A,FFH
+  STA 3000H
+  MVI D,64H       ;timer 20s=200ms*100, 100=64H
+
+START:
+  LDA 2000H       ;input
+  RAL             ;msb in carry
+  CALL DELB       ;delay 200ms
+  JC OFF1         ;msb is off
+  JMP START
+
+OFF1:
+  LDA 2000H       ;get input
+  RAL             ;check msb
+  CALL DELB       ;delay 200ms
+  JNC OFF1        ;msb is off
+
+ON1:
+  LDA 2000H       ;get input
+  RAL             ;check msb
+  CALL DELB       ;delay 200ms
+  JC ON1          ;msb is on
+
+OFF2:
+  MVI A,00H
+  STA 3000H       ;light LEDS
+  CALL DELB       ;delay 200ms
+
+  LDA 2000H       ;get input
+  RAL             ;check msb
+  JC ON2          ;msb is on
+
+  DCR D           ;decrease timer
+  MOV A,D
+  CPI 00H         ;check if timer reached 0
+  JNZ OFF2        ;timer not 0, keep lighting
+  JMP SET         ;timer reached 0, reset
+
+ON2:
+  DCR D           ;decrease timer
+  MOV A,D
+  CPI 00H         ;check if timer reached 0
+  JZ SET          ;timer reached 0, reset
+
+  LDA 2000H       ;get input
+  RAL             ;check msb
+  JC RESETTIMER   ;msb is off, reset timer
+
+  MVI A,00H
+  STA 3000H       ;light LEDS
+  CALL DELB       ;delay 200ms
+  JMP ON2
+  
+RESETTIMER:
+  MVI D,64H
+  JMP OFF2
+
+END

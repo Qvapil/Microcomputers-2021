@@ -1,0 +1,24 @@
+START:
+  CALL KIND	;input at A
+  CPI 09H	;if A>=9 get input again
+  JNC START  
+  CPI 00H     ;if A=0 get input again
+  JZ START
+  MOV B,A	;put input in B
+  MVI D,FFH	;D=11111111  
+	
+LOOP2:
+  DCR B			
+  MOV A,D
+  RAL		;rotate D and pad with 0
+  MOV D,A	
+  MOV A,B	
+  CPI 00H	;if B>0 keep looping
+  JNZ LOOP2 	
+  MOV A,D
+  RAR         ;rotate D once to the right cause we have done one extra rotation
+  ORI 80H     ;set MSB=1
+  CMA
+  STA 3000H
+  JMP START
+END

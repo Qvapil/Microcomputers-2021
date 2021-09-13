@@ -1,0 +1,154 @@
+	IN 10H		
+	LXI H,0A30H	;output at 0A30H, far from program data
+	MVI M,10H	;10H means print nothing
+	INX H		;store output at 0A30H-0A35H
+	MVI M,10H
+	INX H		
+	MVI M,10H	;0A30H to 0A33H digits 1-3 print nothing
+	INX H	
+	MVI M,10H		
+START:
+
+LINE_0:		
+	MVI A,FEH	;FEH = 11111110, select line 0
+	STA 2800H	;store in 2800H
+	LDA 1800H	;read column
+	ANI 07H	;3 lsb have the info 
+	MVI C,86H	;set C=INSTR STEP
+	CPI 06H       ;if A=00000110 then button from column 1 is pressed 
+	JZ DISPLAY	;go to display it
+	MVI C,85H	;C=FETCH PC
+	CPI 05H	;if A=00000101 then button from column 2 is pressed 
+	JZ DISPLAY
+	MVI C,F7H	;C=HRDWR STEP 
+	CPI 03H	;if A=00000011 then button from column 3 is pressed 
+	JZ DISPLAY
+
+LINE_1:		
+	MVI A,FDH
+	STA 2800H	
+	LDA 1800H	
+	ANI 07H	
+	MVI C,84H
+	CPI 06H	;RUN
+	JZ DISPLAY
+	MVI C,80H
+	CPI 05H	;FETCH REG
+	JZ DISPLAY
+	MVI C,82H
+	CPI 03H	;FETCH ADRS
+	JZ DISPLAY
+
+LINE_2:			
+	MVI A,FBH
+	STA 2800H		
+	LDA 1800H		
+	ANI 07H		
+	MVI C,00H
+	CPI 06H	;0
+	JZ DISPLAY
+	MVI C,83H
+	CPI 05H	;STORE/INCR
+	JZ DISPLAY
+	MVI C,81H
+	CPI 03H	;DECR
+	JZ DISPLAY
+
+LINE_3:			
+	MVI A,F7H
+	STA 2800H		
+	LDA 1800H		
+	ANI 07H		
+	MVI C,01H
+	CPI 06H	;1
+	JZ DISPLAY
+	MVI C,02H
+	CPI 05H	;2
+	JZ DISPLAY
+	MVI C,03H
+	CPI 03H	;3
+	JZ DISPLAY
+
+LINE_4:			
+	MVI A,EFH
+	STA 2800H		
+	LDA 1800H		
+	ANI 07H		
+	MVI C,04H
+	CPI 06H	;4
+	JZ DISPLAY
+	MVI C,05H
+	CPI 05H	;5
+	JZ DISPLAY
+	MVI C,06H
+	CPI 03H	;6
+	JZ DISPLAY
+
+LINE_5:			
+	MVI A,DFH
+	STA 2800H		
+	LDA 1800H		
+	ANI 07H		
+	MVI C,07H
+	CPI 06H	;7
+	JZ DISPLAY
+	MVI C,08H
+	CPI 05H	;8
+	JZ DISPLAY
+	MVI C,09H
+	CPI 03H	;9
+	JZ DISPLAY
+
+LINE_6:			
+	MVI A,BFH
+	STA 2800H		
+	LDA 1800H		
+	ANI 07H		
+	MVI C,0AH
+	CPI 06H	;A
+	JZ DISPLAY
+	MVI C,0BH
+	CPI 05H	;B
+	JZ DISPLAY
+	MVI C,0CH
+	CPI 03H	;C
+	JZ DISPLAY
+
+LINE_7:			
+	MVI A,7FH
+	STA 2800H		
+	LDA 1800H		
+	ANI 07H		
+	MVI C,0DH
+	CPI 06H	;D
+	JZ DISPLAY
+	MVI C,0EH
+	CPI 05H	;E
+	JZ DISPLAY
+	MVI C,0FH
+	CPI 03H	;F
+	JZ DISPLAY
+
+	JMP START	;if no button is pressed, check again
+	
+DISPLAY:
+	LXI H,0A34H
+	MOV A,C	;C has output
+	ANI 0FH	;isolate the 4 LSBs
+	MOV M,A	;store them to 0A30H(first digit from left)
+	INX H		;HL++
+	MOV A,C		
+	ANI F0H	;isolate the 4 MSBs
+	RRC		;shift them to the 4 LSBs
+	RRC
+	RRC
+	RRC			
+	MOV M,A	;store them to 0A31(second digit from left)
+
+	LXI D,0A30H	;move the block 0A30 to 0A35 to the memory
+	CALL STDM	;where the DCD routine reads
+	CALL DCD	;print
+
+	JMP START
+
+	END

@@ -1,0 +1,36 @@
+IN 10H
+LXI B,01F4H   ;delay 01F4H=500ms=1/2sec
+MVI E,01H     ;start at LSB LED, store it in E
+MOV A,E
+CMA
+STA 3000H
+CMA
+
+PAUSE:
+  LDA 2000H
+  RRC         ;isolate LSB switch
+  CALL DELB   ;delay
+  JNC PAUSE   ;if LSB is 0 pause
+  RLC
+  RLC         ;isolate MSB switch
+  JC RIGHT    ;if MSB is 1 shift right
+
+LEFT:
+  MOV A,E     ;get previous LED from E
+  RLC         ;shift left
+  CMA
+  STA 3000H
+  CMA
+  MOV E,A     ;store new LED in E
+  JMP PAUSE
+
+RIGHT:
+  MOV A,E     ;get previous LED from E
+  RRC         ;shift right
+  CMA
+  STA 3000H
+  CMA
+  MOV E,A     ;store new LED in E
+  JMP PAUSE
+
+END
